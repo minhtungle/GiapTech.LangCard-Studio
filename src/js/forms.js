@@ -36,16 +36,80 @@ function imgUpload(label, val, onch_key, idx) {
 
 const _grpLabel = `style="margin-top:4px;font-size:11px;font-weight:600;color:var(--text2)"`;
 
+// ── page background section (chung cho mọi template) ──
+function imgUploadBg(val){
+  const hasImg = !!val;
+  return `<div class="fg"><div class="fg-label" style="font-size:9px">Ảnh nền</div>
+    <div class="img-upload-zone" id="bg-uz">
+      <input type="file" accept="image/*" onchange="handleBgUpload(event)" aria-label="Ảnh nền">
+      ${hasImg
+        ? `<img src="${esc(val)}" class="img-preview show" alt=""><button class="img-clear" onclick="clearBgImage(event)" aria-label="Xoá ảnh nền">×</button>`
+        : `<img class="img-preview" alt=""><div style="font-size:10px;color:var(--text3)">📷 Kéo ảnh nền vào đây</div><div style="font-size:9px;color:var(--text3)">hoặc click để chọn</div>`}
+    </div></div>`;
+}
+function fitSelect(fit){
+  const opts = [['cover','Phủ đầy (cover)'],['contain','Vừa khung (contain)'],['repeat','Lặp lại (tile)']];
+  return `<div class="fg"><div class="fg-label" style="font-size:9px">Kiểu hiển thị ảnh</div>
+    <select class="fsel" onchange="setPageBgFit(this.value)">${opts.map(([v,l])=>`<option value="${v}" ${v===fit?'selected':''}>${l}</option>`).join('')}</select></div>`;
+}
+function overlaySlider(d){
+  const pct = Math.round(((d.bg && d.bg.overlay) || 0) * 100);
+  return `<div class="fg">
+    <div class="fg-label" style="font-size:9px" id="bg-ov-label">Lớp phủ giúp chữ dễ đọc — ${pct}%</div>
+    <input type="range" min="0" max="90" value="${pct}" style="width:100%;accent-color:var(--accent)"
+      oninput="setPageBgOverlay(this.value);document.getElementById('bg-ov-label').textContent='Lớp phủ giúp chữ dễ đọc — '+this.value+'%'">
+  </div>`;
+}
+function presetGallery(d){
+  const b = d.bg || {};
+  const curId = b.type==='preset' ? b.preset : ((b.type==='template'||!b.type) ? 'template' : null);
+  const cell = (id,label,chip)=>`<button class="bg-swatch ${curId===id?'active':''}" title="${label}" onclick="setPageBgPreset('${id}')">
+      <span class="bg-swatch-chip" style="background:${chip}"></span>
+      <span class="bg-swatch-lbl">${label}</span>
+    </button>`;
+  const cells = cell('template','Theo template','repeating-linear-gradient(45deg,#c9c9d6 0 5px,#ececf2 5px 10px)')
+    + BG_PRESETS.map(p=>cell(p.id,p.label,p.css)).join('');
+  return `<div class="fg"><div class="fg-label" style="font-size:9px">Chọn nền có sẵn</div>
+    <div class="bg-swatch-grid">${cells}</div></div>`;
+}
+function bgSection(d){
+  const b = d.bg || {};
+  const type = b.type || 'template';
+  const inPreset = (type==='template' || type==='preset');
+  const btn = (label,active,onc)=>`<button class="seg-btn ${active?'active':''}" onclick="${onc}">${label}</button>`;
+  const seg = btn('Mặc định',inPreset,"setPageBgType('template')")
+    + btn('Màu',type==='color',"setPageBgType('color')")
+    + btn('Ảnh',type==='image',"setPageBgType('image')");
+  let extra = '';
+  if(inPreset){
+    extra = presetGallery(d) + (type==='preset' ? overlaySlider(d) : '');
+  } else if(type==='color'){
+    extra = colorPicker('Màu nền trang', b.color||'#ffffff', "setPageBgColor(this.value)")
+      + overlaySlider(d);
+  } else if(type==='image'){
+    extra = imgUploadBg(b.image||'')
+      + fitSelect(b.fit||'cover')
+      + colorPicker('Màu phía sau ảnh', b.color||'#ffffff', "setPageBgColor(this.value)")
+      + overlaySlider(d);
+  }
+  return `<div class="icard" style="margin-bottom:4px">
+    <div class="fg-label">🎨 Nền trang</div>
+    <div class="seg seg-sm">${seg}</div>
+    ${extra}
+  </div>`;
+}
+
 function buildForm(d) {
   const tt = d.template;
-  if(tt==='vocab-grid') return formVocab(d);
-  if(tt==='sentence-pairs') return formSentence(d);
-  if(tt==='conjugation') return formConj(d);
-  if(tt==='idiom-spotlight') return formIdiom(d);
-  if(tt==='dialogue') return formDialog(d);
-  if(tt==='word-map') return formWordMap(d);
-  if(tt==='word-family') return formWordFamily(d);
-  return '';
+  let body = '';
+  if(tt==='vocab-grid') body = formVocab(d);
+  else if(tt==='sentence-pairs') body = formSentence(d);
+  else if(tt==='conjugation') body = formConj(d);
+  else if(tt==='idiom-spotlight') body = formIdiom(d);
+  else if(tt==='dialogue') body = formDialog(d);
+  else if(tt==='word-map') body = formWordMap(d);
+  else if(tt==='word-family') body = formWordFamily(d);
+  return bgSection(d) + body;
 }
 
 function formVocab(d) {

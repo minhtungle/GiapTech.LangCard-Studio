@@ -29,3 +29,20 @@ const LANG_LABELS_UI = {en:'🇬🇧 Tiếng Anh',de:'🇩🇪 Tiếng Đức',f
 
 // FONT embed helper (for exports)
 const FONT_EMBED = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap');`;
+
+// ── BACKGROUND PRESETS ──
+// Tổng hợp các nền mặc định của 7 template thành bộ chọn sẵn.
+// `dark:true` = nền tối (đi với chữ sáng). Dùng để tự tính lớp phủ khi lệch với template.
+const BG_PRESETS = [
+  {id:'light',  label:'Sáng',           css:'#f8fafc', dark:false},
+  {id:'cream',  label:'Kem',            css:'#fffdf7', dark:false},
+  {id:'slate',  label:'Xám xanh',       css:'#f1f5f9', dark:false},
+  {id:'paper',  label:'Giấy ấm',        css:'#fafaf9', dark:false},
+  {id:'indigo', label:'Tím than',       css:'linear-gradient(145deg,#0f172a 0%,#1e1b4b 55%,#0f172a 100%)', dark:true},
+  {id:'plum',   label:'Mận đêm',        css:'linear-gradient(160deg,#0f172a 0%,#1e1b2e 100%)',            dark:true},
+  {id:'ocean',  label:'Xanh đại dương', css:'linear-gradient(150deg,#0f172a 0%,#172554 55%,#0f172a 100%)', dark:true},
+];
+const DEFAULT_BG_ID = 'light';   // nền chọn sẵn ban đầu
+
+// Độ tối gốc của từng template (chữ sáng = true). Dùng để tự bật scrim khi nền lệch hướng.
+const TEMPLATE_DARK = {'vocab-grid':true,'sentence-pairs':false,'conjugation':false,'idiom-spotlight':true,'dialogue':false,'word-map':false,'word-family':true};

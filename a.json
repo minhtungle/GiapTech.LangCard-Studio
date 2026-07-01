@@ -1,0 +1,1003 @@
+[
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Trennbare Verben",
+        "level": "B1",
+        "title": "Separable Verbs",
+        "items": [
+            {
+                "sentence": "Ich rufe dich später an.",
+                "translation": "Tôi sẽ gọi điện cho bạn sau.",
+                "highlight": [
+                    "rufe",
+                    "an"
+                ]
+            },
+            {
+                "sentence": "Wir stehen jeden Morgen um sechs Uhr auf.",
+                "translation": "Chúng tôi dậy vào sáu giờ mỗi sáng.",
+                "highlight": [
+                    "stehen",
+                    "auf"
+                ]
+            },
+            {
+                "sentence": "Sie macht das Fenster zu, weil es kalt ist.",
+                "translation": "Cô ấy đóng cửa sổ vì lạnh.",
+                "highlight": [
+                    "macht",
+                    "zu"
+                ]
+            },
+            {
+                "sentence": "Er kommt heute Abend spät an.",
+                "translation": "Anh ấy tối nay sẽ đến muộn.",
+                "highlight": [
+                    "kommt",
+                    "an"
+                ]
+            },
+            {
+                "sentence": "Mach bitte das Licht aus, bevor du gehst.",
+                "translation": "Làm ơn tắt đèn trước khi bạn đi.",
+                "highlight": [
+                    "Mach",
+                    "aus"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Modalverben",
+        "level": "B1",
+        "title": "Modal Verbs",
+        "items": [
+            {
+                "sentence": "Ich muss morgen früh aufstehen.",
+                "translation": "Tôi phải dậy sớm vào ngày mai.",
+                "highlight": [
+                    "muss"
+                ]
+            },
+            {
+                "sentence": "Kannst du mir bitte helfen?",
+                "translation": "Bạn có thể giúp tôi không?",
+                "highlight": [
+                    "Kannst"
+                ]
+            },
+            {
+                "sentence": "Wir dürfen hier nicht rauchen.",
+                "translation": "Chúng tôi không được hút thuốc ở đây.",
+                "highlight": [
+                    "dürfen"
+                ]
+            },
+            {
+                "sentence": "Sie will nächstes Jahr nach Deutschland reisen.",
+                "translation": "Cô ấy muốn đi du lịch Đức năm sau.",
+                "highlight": [
+                    "will"
+                ]
+            },
+            {
+                "sentence": "Man sollte immer die Wahrheit sagen.",
+                "translation": "Người ta nên luôn nói sự thật.",
+                "highlight": [
+                    "sollte"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Perfekt",
+        "level": "B1",
+        "title": "Perfect Tense",
+        "items": [
+            {
+                "sentence": "Ich habe gestern einen Film gesehen.",
+                "translation": "Hôm qua tôi đã xem một bộ phim.",
+                "highlight": [
+                    "habe",
+                    "gesehen"
+                ]
+            },
+            {
+                "sentence": "Wir sind letzten Sommer nach Italien gefahren.",
+                "translation": "Mùa hè trước chúng tôi đã đi đến Ý.",
+                "highlight": [
+                    "sind",
+                    "gefahren"
+                ]
+            },
+            {
+                "sentence": "Er hat seine Hausaufgaben schon gemacht.",
+                "translation": "Anh ấy đã làm bài tập về nhà rồi.",
+                "highlight": [
+                    "hat",
+                    "gemacht"
+                ]
+            },
+            {
+                "sentence": "Sie ist um acht Uhr angekommen.",
+                "translation": "Cô ấy đã đến vào tám giờ.",
+                "highlight": [
+                    "ist",
+                    "angekommen"
+                ]
+            },
+            {
+                "sentence": "Habt ihr das Buch gelesen?",
+                "translation": "Các bạn đã đọc cuốn sách chưa?",
+                "highlight": [
+                    "Habt",
+                    "gelesen"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Präteritum",
+        "level": "B1",
+        "title": "Simple Past Tense",
+        "items": [
+            {
+                "sentence": "Ich war letztes Jahr in Berlin.",
+                "translation": "Năm ngoái tôi đã ở Berlin.",
+                "highlight": [
+                    "war"
+                ]
+            },
+            {
+                "sentence": "Er hatte keine Zeit für das Treffen.",
+                "translation": "Anh ấy không có thời gian cho buổi gặp mặt.",
+                "highlight": [
+                    "hatte"
+                ]
+            },
+            {
+                "sentence": "Wir gingen jeden Tag zur Schule.",
+                "translation": "Chúng tôi đi học mỗi ngày.",
+                "highlight": [
+                    "gingen"
+                ]
+            },
+            {
+                "sentence": "Sie kaufte frisches Brot beim Bäcker.",
+                "translation": "Cô ấy mua bánh mì tươi ở tiệm bánh.",
+                "highlight": [
+                    "kaufte"
+                ]
+            },
+            {
+                "sentence": "Es regnete stark während der Reise.",
+                "translation": "Mưa to trong suốt chuyến đi.",
+                "highlight": [
+                    "regnete"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Konjunktiv II",
+        "level": "B1",
+        "title": "Subjunctive II",
+        "items": [
+            {
+                "sentence": "Wenn ich Zeit hätte, würde ich dich besuchen.",
+                "translation": "Nếu tôi có thời gian, tôi sẽ đến thăm bạn.",
+                "highlight": [
+                    "hätte",
+                    "würde"
+                ]
+            },
+            {
+                "sentence": "Ich würde gern mehr Geld verdienen.",
+                "translation": "Tôi muốn kiếm nhiều tiền hơn.",
+                "highlight": [
+                    "würde"
+                ]
+            },
+            {
+                "sentence": "An deiner Stelle würde ich das nicht tun.",
+                "translation": "Nếu tôi là bạn, tôi sẽ không làm điều đó.",
+                "highlight": [
+                    "würde"
+                ]
+            },
+            {
+                "sentence": "Könnten Sie mir bitte helfen?",
+                "translation": "Bạn có thể giúp tôi được không?",
+                "highlight": [
+                    "Könnten"
+                ]
+            },
+            {
+                "sentence": "Wenn es nicht regnen würde, könnten wir spazieren gehen.",
+                "translation": "Nếu không mưa, chúng ta có thể đi dạo.",
+                "highlight": [
+                    "würde",
+                    "könnten"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Passiv",
+        "level": "B1",
+        "title": "Passive Voice",
+        "items": [
+            {
+                "sentence": "Das Haus wird nächstes Jahr gebaut.",
+                "translation": "Ngôi nhà sẽ được xây vào năm sau.",
+                "highlight": [
+                    "wird",
+                    "gebaut"
+                ]
+            },
+            {
+                "sentence": "Die Rechnung wurde schon bezahlt.",
+                "translation": "Hóa đơn đã được thanh toán rồi.",
+                "highlight": [
+                    "wurde",
+                    "bezahlt"
+                ]
+            },
+            {
+                "sentence": "Das Essen wird gerade gekocht.",
+                "translation": "Món ăn đang được nấu.",
+                "highlight": [
+                    "wird",
+                    "gekocht"
+                ]
+            },
+            {
+                "sentence": "Der Brief ist schon geschrieben worden.",
+                "translation": "Thư đã được viết rồi.",
+                "highlight": [
+                    "geschrieben worden"
+                ]
+            },
+            {
+                "sentence": "In dieser Fabrik werden viele Autos produziert.",
+                "translation": "Nhiều xe hơi được sản xuất trong nhà máy này.",
+                "highlight": [
+                    "werden",
+                    "produziert"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Adjektivdeklination",
+        "level": "B1",
+        "title": "Adjective Declension",
+        "items": [
+            {
+                "sentence": "Das ist ein schönes Haus.",
+                "translation": "Đó là một căn nhà đẹp.",
+                "highlight": [
+                    "schönes"
+                ]
+            },
+            {
+                "sentence": "Ich habe einen neuen Computer gekauft.",
+                "translation": "Tôi đã mua một chiếc máy tính mới.",
+                "highlight": [
+                    "neuen"
+                ]
+            },
+            {
+                "sentence": "Die alte Frau wohnt neben uns.",
+                "translation": "Bà lão sống cạnh chúng tôi.",
+                "highlight": [
+                    "alte"
+                ]
+            },
+            {
+                "sentence": "Wir trinken kalten Kaffee am Morgen.",
+                "translation": "Chúng tôi uống cà phê lạnh vào buổi sáng.",
+                "highlight": [
+                    "kalten"
+                ]
+            },
+            {
+                "sentence": "Das kleine Kind spielt im Garten.",
+                "translation": "Đứa trẻ nhỏ đang chơi trong vườn.",
+                "highlight": [
+                    "kleine"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Präpositionen mit Akkusativ",
+        "level": "B1",
+        "title": "Prepositions with Accusative",
+        "items": [
+            {
+                "sentence": "Wir gehen durch den Park.",
+                "translation": "Chúng tôi đi qua công viên.",
+                "highlight": [
+                    "durch"
+                ]
+            },
+            {
+                "sentence": "Das Geschenk ist für meinen Bruder.",
+                "translation": "Món quà này là cho anh trai tôi.",
+                "highlight": [
+                    "für"
+                ]
+            },
+            {
+                "sentence": "Ohne dich kann ich das nicht machen.",
+                "translation": "Không có bạn tôi không thể làm điều đó.",
+                "highlight": [
+                    "Ohne"
+                ]
+            },
+            {
+                "sentence": "Sie läuft gegen die Wand.",
+                "translation": "Cô ấy chạy vào tường.",
+                "highlight": [
+                    "gegen"
+                ]
+            },
+            {
+                "sentence": "Ich bleibe bis Freitag hier.",
+                "translation": "Tôi ở lại đây đến thứ Sáu.",
+                "highlight": [
+                    "bis"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Präpositionen mit Dativ",
+        "level": "B1",
+        "title": "Prepositions with Dative",
+        "items": [
+            {
+                "sentence": "Ich fahre mit dem Zug zur Arbeit.",
+                "translation": "Tôi đi làm bằng tàu.",
+                "highlight": [
+                    "mit"
+                ]
+            },
+            {
+                "sentence": "Das Geschenk kommt von meiner Mutter.",
+                "translation": "Món quà này từ mẹ tôi.",
+                "highlight": [
+                    "von"
+                ]
+            },
+            {
+                "sentence": "Nach der Arbeit gehe ich nach Hause.",
+                "translation": "Sau khi làm việc tôi về nhà.",
+                "highlight": [
+                    "Nach"
+                ]
+            },
+            {
+                "sentence": "Der Hund läuft zu seinem Besitzer.",
+                "translation": "Con chó chạy đến chủ của nó.",
+                "highlight": [
+                    "zu"
+                ]
+            },
+            {
+                "sentence": "Sie wohnt seit zwei Jahren in Hamburg.",
+                "translation": "Cô ấy đã sống ở Hamburg hai năm rồi.",
+                "highlight": [
+                    "seit"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Wechselpräpositionen",
+        "level": "B1",
+        "title": "Two-Way Prepositions",
+        "items": [
+            {
+                "sentence": "Das Buch liegt auf dem Tisch.",
+                "translation": "Cuốn sách nằm trên bàn.",
+                "highlight": [
+                    "auf dem Tisch"
+                ]
+            },
+            {
+                "sentence": "Ich lege das Buch auf den Tisch.",
+                "translation": "Tôi để cuốn sách lên bàn.",
+                "highlight": [
+                    "auf den Tisch"
+                ]
+            },
+            {
+                "sentence": "Die Katze sitzt unter dem Stuhl.",
+                "translation": "Con mèo ngồi dưới ghế.",
+                "highlight": [
+                    "unter dem Stuhl"
+                ]
+            },
+            {
+                "sentence": "Wir hängen das Bild an die Wand.",
+                "translation": "Chúng tôi treo bức tranh lên tường.",
+                "highlight": [
+                    "an die Wand"
+                ]
+            },
+            {
+                "sentence": "Er steht zwischen den beiden Häusern.",
+                "translation": "Anh ấy đứng giữa hai ngôi nhà.",
+                "highlight": [
+                    "zwischen den beiden Häusern"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Relativsätze",
+        "level": "B1",
+        "title": "Relative Clauses",
+        "items": [
+            {
+                "sentence": "Das ist der Mann, der neben mir wohnt.",
+                "translation": "Đó là người đàn ông sống cạnh tôi.",
+                "highlight": [
+                    "der neben mir wohnt"
+                ]
+            },
+            {
+                "sentence": "Die Frau, die dort steht, ist meine Chefin.",
+                "translation": "Người phụ nữ đang đứng đó là sếp của tôi.",
+                "highlight": [
+                    "die dort steht"
+                ]
+            },
+            {
+                "sentence": "Das Buch, das ich gelesen habe, war sehr interessant.",
+                "translation": "Cuốn sách tôi đã đọc rất thú vị.",
+                "highlight": [
+                    "das ich gelesen habe"
+                ]
+            },
+            {
+                "sentence": "Ich kenne die Stadt, in der du geboren bist.",
+                "translation": "Tôi biết thành phố nơi bạn được sinh ra.",
+                "highlight": [
+                    "in der du geboren bist"
+                ]
+            },
+            {
+                "sentence": "Das sind die Kinder, deren Eltern im Ausland arbeiten.",
+                "translation": "Đó là những đứa trẻ có cha mẹ làm việc ở nước ngoài.",
+                "highlight": [
+                    "deren Eltern im Ausland arbeiten"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Nebensätze: weil, dass, obwohl",
+        "level": "B1",
+        "title": "Subordinate Clauses",
+        "items": [
+            {
+                "sentence": "Ich bleibe zu Hause, weil ich krank bin.",
+                "translation": "Tôi ở nhà vì tôi bị bệnh.",
+                "highlight": [
+                    "weil ich krank bin"
+                ]
+            },
+            {
+                "sentence": "Ich glaube, dass er recht hat.",
+                "translation": "Tôi tin rằng anh ấy đúng.",
+                "highlight": [
+                    "dass er recht hat"
+                ]
+            },
+            {
+                "sentence": "Obwohl es regnet, gehen wir spazieren.",
+                "translation": "Mặc dù trời mưa, chúng tôi vẫn đi dạo.",
+                "highlight": [
+                    "Obwohl es regnet"
+                ]
+            },
+            {
+                "sentence": "Sie ist müde, weil sie viel gearbeitet hat.",
+                "translation": "Cô ấy mệt vì đã làm việc nhiều.",
+                "highlight": [
+                    "weil sie viel gearbeitet hat"
+                ]
+            },
+            {
+                "sentence": "Er sagt, dass er morgen kommt.",
+                "translation": "Anh ấy nói rằng ngày mai anh ấy sẽ đến.",
+                "highlight": [
+                    "dass er morgen kommt"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Reflexive Verben",
+        "level": "B1",
+        "title": "Reflexive Verbs",
+        "items": [
+            {
+                "sentence": "Ich freue mich auf die Ferien.",
+                "translation": "Tôi mong chờ kỳ nghỉ.",
+                "highlight": [
+                    "freue mich"
+                ]
+            },
+            {
+                "sentence": "Er wäscht sich jeden Morgen.",
+                "translation": "Anh ấy rửa mặt mỗi sáng.",
+                "highlight": [
+                    "wäscht sich"
+                ]
+            },
+            {
+                "sentence": "Wir treffen uns um sieben Uhr.",
+                "translation": "Chúng ta gặp nhau vào bảy giờ.",
+                "highlight": [
+                    "treffen uns"
+                ]
+            },
+            {
+                "sentence": "Sie interessiert sich für Musik.",
+                "translation": "Cô ấy quan tâm đến âm nhạc.",
+                "highlight": [
+                    "interessiert sich"
+                ]
+            },
+            {
+                "sentence": "Setzt euch bitte auf den Stuhl.",
+                "translation": "Hãy ngồi xuống ghế đi.",
+                "highlight": [
+                    "Setzt euch"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Komparativ und Superlativ",
+        "level": "B1",
+        "title": "Comparative and Superlative",
+        "items": [
+            {
+                "sentence": "Berlin ist größer als Hamburg.",
+                "translation": "Berlin lớn hơn Hamburg.",
+                "highlight": [
+                    "größer als"
+                ]
+            },
+            {
+                "sentence": "Das ist der schönste Tag meines Lebens.",
+                "translation": "Đây là ngày đẹp nhất trong cuộc đời tôi.",
+                "highlight": [
+                    "schönste"
+                ]
+            },
+            {
+                "sentence": "Mein Bruder ist jünger als ich.",
+                "translation": "Anh trai tôi trẻ hơn tôi.",
+                "highlight": [
+                    "jünger als"
+                ]
+            },
+            {
+                "sentence": "Diese Aufgabe ist am schwierigsten.",
+                "translation": "Bài tập này là khó nhất.",
+                "highlight": [
+                    "am schwierigsten"
+                ]
+            },
+            {
+                "sentence": "Er läuft schneller als sein Freund.",
+                "translation": "Anh ấy chạy nhanh hơn bạn của anh ấy.",
+                "highlight": [
+                    "schneller als"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Genitiv",
+        "level": "B1",
+        "title": "Genitive Case",
+        "items": [
+            {
+                "sentence": "Das ist das Auto meines Vaters.",
+                "translation": "Đó là xe của bố tôi.",
+                "highlight": [
+                    "meines Vaters"
+                ]
+            },
+            {
+                "sentence": "Die Farbe des Himmels ist heute schön.",
+                "translation": "Màu của bầu trời hôm nay rất đẹp.",
+                "highlight": [
+                    "des Himmels"
+                ]
+            },
+            {
+                "sentence": "Der Name der Stadt ist mir unbekannt.",
+                "translation": "Tôi không biết tên của thành phố này.",
+                "highlight": [
+                    "der Stadt"
+                ]
+            },
+            {
+                "sentence": "Das ist die Tasche meiner Schwester.",
+                "translation": "Đó là túi của em gái tôi.",
+                "highlight": [
+                    "meiner Schwester"
+                ]
+            },
+            {
+                "sentence": "Wegen des schlechten Wetters bleiben wir zu Hause.",
+                "translation": "Vì thời tiết xấu, chúng tôi ở nhà.",
+                "highlight": [
+                    "des schlechten Wetters"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Fragewörter",
+        "level": "B1",
+        "title": "Question Words",
+        "items": [
+            {
+                "sentence": "Wann beginnt der Unterricht?",
+                "translation": "Khi nào lớp học bắt đầu?",
+                "highlight": [
+                    "Wann"
+                ]
+            },
+            {
+                "sentence": "Wo ist der nächste Bahnhof?",
+                "translation": "Trạm tàu gần nhất ở đâu?",
+                "highlight": [
+                    "Wo"
+                ]
+            },
+            {
+                "sentence": "Warum bist du so müde?",
+                "translation": "Tại sao bạn mệt vậy?",
+                "highlight": [
+                    "Warum"
+                ]
+            },
+            {
+                "sentence": "Wie viel kostet dieses Buch?",
+                "translation": "Cuốn sách này giá bao nhiêu?",
+                "highlight": [
+                    "Wie viel"
+                ]
+            },
+            {
+                "sentence": "Wer hat den Kuchen gebacken?",
+                "translation": "Ai đã làm bánh này?",
+                "highlight": [
+                    "Wer"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Possessivpronomen",
+        "level": "B1",
+        "title": "Possessive Pronouns",
+        "items": [
+            {
+                "sentence": "Das ist mein Auto.",
+                "translation": "Đó là xe của tôi.",
+                "highlight": [
+                    "mein"
+                ]
+            },
+            {
+                "sentence": "Ihre Tasche liegt auf dem Tisch.",
+                "translation": "Túi của cô ấy nằm trên bàn.",
+                "highlight": [
+                    "Ihre"
+                ]
+            },
+            {
+                "sentence": "Unser Haus hat einen großen Garten.",
+                "translation": "Nhà của chúng tôi có một vườn lớn.",
+                "highlight": [
+                    "Unser"
+                ]
+            },
+            {
+                "sentence": "Ist das dein Handy?",
+                "translation": "Đó là điện thoại của bạn phải không?",
+                "highlight": [
+                    "dein"
+                ]
+            },
+            {
+                "sentence": "Seine Familie wohnt in München.",
+                "translation": "Gia đình anh ấy sống ở München.",
+                "highlight": [
+                    "Seine"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Futur I",
+        "level": "B1",
+        "title": "Future Tense I",
+        "items": [
+            {
+                "sentence": "Ich werde nächstes Jahr nach Deutschland fliegen.",
+                "translation": "Năm sau tôi sẽ bay đến Đức.",
+                "highlight": [
+                    "werde",
+                    "fliegen"
+                ]
+            },
+            {
+                "sentence": "Wir werden das Projekt bald abschließen.",
+                "translation": "Chúng tôi sẽ hoàn thành dự án sớm.",
+                "highlight": [
+                    "werden",
+                    "abschließen"
+                ]
+            },
+            {
+                "sentence": "Sie wird morgen ihre Prüfung schreiben.",
+                "translation": "Ngày mai cô ấy sẽ làm bài thi.",
+                "highlight": [
+                    "wird",
+                    "schreiben"
+                ]
+            },
+            {
+                "sentence": "Es wird bald regnen.",
+                "translation": "Trời sẽ mưa sớm.",
+                "highlight": [
+                    "wird",
+                    "regnen"
+                ]
+            },
+            {
+                "sentence": "Wirst du mich morgen besuchen?",
+                "translation": "Ngày mai bạn sẽ đến thăm tôi chứ?",
+                "highlight": [
+                    "Wirst",
+                    "besuchen"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Imperativ",
+        "level": "B1",
+        "title": "Imperative Mood",
+        "items": [
+            {
+                "sentence": "Öffne bitte das Fenster.",
+                "translation": "Hãy mở cửa sổ ra.",
+                "highlight": [
+                    "Öffne"
+                ]
+            },
+            {
+                "sentence": "Setzen Sie sich, bitte.",
+                "translation": "Xin hãy ngồi xuống.",
+                "highlight": [
+                    "Setzen Sie"
+                ]
+            },
+            {
+                "sentence": "Kommt schnell hierher!",
+                "translation": "Mọi người hãy đến đây nhanh!",
+                "highlight": [
+                    "Kommt"
+                ]
+            },
+            {
+                "sentence": "Sei bitte pünktlich morgen.",
+                "translation": "Hãy đúng giờ vào ngày mai.",
+                "highlight": [
+                    "Sei"
+                ]
+            },
+            {
+                "sentence": "Hört gut zu, bitte.",
+                "translation": "Hãy lắng nghe kỹ.",
+                "highlight": [
+                    "Hört"
+                ]
+            }
+        ]
+    },
+    {
+        "template": "sentence-pairs",
+        "bg": {
+            "type": "preset",
+            "preset": "light",
+            "overlay": 0
+        },
+        "lang": "de",
+        "topic": "Konjunktionen: aber, oder, denn, sondern",
+        "level": "B1",
+        "title": "Coordinating Conjunctions",
+        "items": [
+            {
+                "sentence": "Ich möchte kommen, aber ich habe keine Zeit.",
+                "translation": "Tôi muốn đến, nhưng tôi không có thời gian.",
+                "highlight": [
+                    "aber"
+                ]
+            },
+            {
+                "sentence": "Willst du Tee oder Kaffee?",
+                "translation": "Bạn muốn trà hay cà phê?",
+                "highlight": [
+                    "oder"
+                ]
+            },
+            {
+                "sentence": "Sie bleibt zu Hause, denn sie ist krank.",
+                "translation": "Cô ấy ở nhà vì cô ấy bị bệnh.",
+                "highlight": [
+                    "denn"
+                ]
+            },
+            {
+                "sentence": "Er ist nicht müde, sondern hungrig.",
+                "translation": "Anh ấy không mệt, mà đói.",
+                "highlight": [
+                    "sondern"
+                ]
+            },
+            {
+                "sentence": "Wir gehen ins Kino, aber wir kommen früh zurück.",
+                "translation": "Chúng tôi đi xem phim, nhưng chúng tôi sẽ về sớm.",
+                "highlight": [
+                    "aber"
+                ]
+            }
+        ]
+    }
+]

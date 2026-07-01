@@ -54,6 +54,7 @@ function loadProjectIntoEditor(id){
   if(!proj) return;
   curProjId = id;
   pages = proj.pages;
+  if(typeof ensurePageBg==='function') pages.forEach(ensurePageBg);   // backfill nền sáng cho trang cũ
   cur = 0;
   docSizeKey = (proj.docSizeKey && DOC_SIZES[proj.docSizeKey]) ? proj.docSizeKey : 'a4';
   const sel = document.getElementById('doc-size');

@@ -87,6 +87,22 @@ function pgDragEnd(){ _dragFrom = null; }
 // ═══════════════════════════════
 // TABS
 // ═══════════════════════════════
+let jsonScope = 'page';   // 'page' = pages[cur] (object) | 'all' = pages (mảng)
+
+// text hiển thị trong ô JSON theo phạm vi
+function jsonText(){ return jsonScope==='all' ? JSON.stringify(pages,null,2) : JSON.stringify(pages[cur],null,2); }
+
+function setJsonScope(s){
+  jsonScope = s;
+  document.querySelectorAll('#json-scope-seg .seg-btn').forEach(b=>b.classList.toggle('active', b.dataset.scope===s));
+  const hint=document.getElementById('json-hint');
+  if(hint) hint.textContent = s==='all'
+    ? 'Mảng nhiều trang — Áp dụng sẽ tạo lại toàn bộ trang'
+    : 'Sửa 1 trang hiện tại';
+  const ta=document.getElementById('json-ta'); if(ta) ta.value = jsonText();
+  const err=document.getElementById('json-err'); if(err) err.style.display='none';
+}
+
 function switchTab(tab) {
   curTab=tab;
   document.getElementById('tab-form').className='tab-pill'+(tab==='form'?' active':'');
@@ -94,19 +110,43 @@ function switchTab(tab) {
   document.getElementById('form-view').style.display=tab==='form'?'':'none';
   document.getElementById('json-view').style.display=tab==='json'?'flex':'none';
   document.getElementById('apply-btn').style.display=tab==='json'?'':'none';
-  if(tab==='json') document.getElementById('json-ta').value=JSON.stringify(pages[cur],null,2);
+  if(tab==='json') document.getElementById('json-ta').value=jsonText();
 }
-function syncJSON(){if(curTab==='json') document.getElementById('json-ta').value=JSON.stringify(pages[cur],null,2);}
+function syncJSON(){if(curTab==='json') document.getElementById('json-ta').value=jsonText();}
+
 function applyJSON(){
-  try{
-    const p=JSON.parse(document.getElementById('json-ta').value);
-    pages[cur]=p;
-    document.getElementById('json-err').style.display='none';
-    rAll(); pushHistory(true); toast('JSON đã áp dụng ✓');
-  }catch(e){
-    document.getElementById('json-err').style.display='block';
-    document.getElementById('json-err').textContent='Lỗi JSON: '+e.message;
+  const errEl=document.getElementById('json-err');
+  const fail=(msg)=>{ errEl.style.display='block'; errEl.textContent=msg; };
+  let data;
+  try{ data=JSON.parse(document.getElementById('json-ta').value); }
+  catch(e){ return fail('Lỗi JSON: '+e.message); }
+  errEl.style.display='none';
+
+  const isPageObj = x => x && typeof x==='object' && !Array.isArray(x);
+
+  // Mảng (hoặc {pages:[...]}) → tạo đồng loạt nhiều trang, thay toàn bộ tài liệu.
+  // Kích hoạt khi đang ở phạm vi "Tất cả trang" HOẶC khi dữ liệu dán vào là mảng.
+  if(jsonScope==='all' || Array.isArray(data)){
+    let arr=null, docSize=null;
+    if(Array.isArray(data)) arr=data;
+    else if(data && Array.isArray(data.pages)){ arr=data.pages; docSize=data.docSizeKey; }
+    if(!arr || !arr.length || !arr.every(isPageObj))
+      return fail('Cần một MẢNG các trang, ví dụ: [ { "template": … }, { … } ]');
+    if(docSize && DOC_SIZES[docSize]){
+      docSizeKey=docSize;
+      const sel=document.getElementById('doc-size'); if(sel) sel.value=docSizeKey;
+    }
+    pages = arr.map(p => (typeof ensurePageBg==='function' ? ensurePageBg(p) : p));
+    cur = 0;
+    rAll(); pushHistory(true);
+    toast(`Đã tạo ${pages.length} trang từ JSON ✓`);
+    return;
   }
+
+  // Object đơn → chỉ thay trang hiện tại (như cũ).
+  if(!isPageObj(data)) return fail('Cần một object cho 1 trang, hoặc chuyển sang "Tất cả trang" để dán mảng');
+  pages[cur] = (typeof ensurePageBg==='function' ? ensurePageBg(data) : data);
+  rAll(); pushHistory(true); toast('JSON đã áp dụng ✓');
 }
 
 // ═══════════════════════════════

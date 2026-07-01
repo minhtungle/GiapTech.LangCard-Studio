@@ -65,3 +65,72 @@ function clearImg(ev, key, idx) {
   if(parts[0]==='items') pages[cur].items[parseInt(parts[1])].image = '';
   rAll(); pushHistory(true);
 }
+
+// ═══════════════════════════════
+// PAGE BACKGROUND — màu hoặc ảnh nền cho trang
+// pages[cur].bg = {type:'template'|'color'|'image', color, image, fit}
+// ═══════════════════════════════
+function setPageBgType(type){
+  const p = pages[cur];
+  if(!p.bg) p.bg = {};
+  p.bg.type = type;
+  if(type==='color' && !p.bg.color) p.bg.color = '#ffffff';
+  if(type==='image' && !p.bg.fit)  p.bg.fit  = 'cover';
+  rAll(); pushHistory(true);          // rAll: form đổi để hiện đúng ô điều khiển
+}
+// nền sáng mặc định cho 1 template. Chữ tự đổi theo nền nên không cần lớp phủ.
+function bgForTemplate(template){
+  return {type:'preset', preset:DEFAULT_BG_ID, overlay:0};
+}
+// trang cũ chưa có nền → gán nền sáng mặc định (idempotent)
+function ensurePageBg(p){ if(p && !p.bg) p.bg = bgForTemplate(p.template); return p; }
+
+// chọn 1 nền có sẵn; 'template' = về nền gốc của template.
+// Màu chữ tự khớp độ sáng/tối của nền (xem pageIsDark) nên không cần scrim.
+function setPageBgPreset(id){
+  const p = pages[cur];
+  if(id==='template'){ p.bg = {type:'template'}; rAll(); pushHistory(true); return; }
+  if(!p.bg) p.bg = {};
+  p.bg.type    = 'preset';
+  p.bg.preset  = id;
+  p.bg.overlay = 0;
+  rAll(); pushHistory(true);
+}
+function setPageBgColor(v){
+  const p = pages[cur];
+  if(!p.bg) p.bg = {type:'color'};
+  p.bg.color = v;
+  rPreview(); syncJSON(); pushHistory();
+}
+function setPageBgFit(v){
+  const p = pages[cur];
+  if(!p.bg) p.bg = {type:'image'};
+  p.bg.fit = v;
+  rPreview(); syncJSON(); pushHistory(true);
+}
+function setPageBgOverlay(v){
+  const p = pages[cur];
+  if(!p.bg) p.bg = {};
+  p.bg.overlay = Math.max(0, Math.min(0.92, (parseFloat(v)||0)/100));
+  rPreview(); syncJSON(); pushHistory();   // rPreview (không rAll) để không reset slider khi kéo
+}
+function handleBgUpload(ev){
+  const file = ev.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const p = pages[cur];
+    if(!p.bg) p.bg = {};
+    p.bg.type  = 'image';
+    p.bg.image = e.target.result;
+    if(!p.bg.fit) p.bg.fit = 'cover';
+    if(p.bg.overlay == null) p.bg.overlay = 0.35;   // scrim mặc định để chữ đọc được ngay
+    rAll(); pushHistory(true);
+  };
+  reader.readAsDataURL(file);
+}
+function clearBgImage(ev){
+  if(ev) ev.stopPropagation();
+  const p = pages[cur];
+  if(p.bg){ p.bg.image = ''; if(p.bg.type==='image') p.bg.type = 'template'; }
+  rAll(); pushHistory(true);
+}

@@ -28,8 +28,25 @@ function doExport() {
   else exportZIP(pagesArr, W, H, scale);
 }
 
+// html2canvas 1.4.1 không hiểu các hàm màu đời mới (oklch/oklab/lab/lch/hwb/color()).
+// Dùng canvas của trình duyệt để quy đổi từng màu về rgb/hex trước khi xuất.
+const _colorCtx = (()=>{ try{ return document.createElement('canvas').getContext('2d'); }catch(e){ return null; } })();
+function _normColor(c){
+  if(!_colorCtx) return null;
+  try{
+    _colorCtx.fillStyle = '#123456';                 // sentinel để phát hiện màu không đọc được
+    _colorCtx.fillStyle = c;
+    const v = _colorCtx.fillStyle;
+    if(v.toLowerCase()==='#123456' && c.replace(/\s/g,'').toLowerCase()!=='#123456') return null;
+    return v;
+  }catch(e){ return null; }
+}
+function sanitizeColors(html){
+  return html.replace(/\b(?:oklch|oklab|lab|lch|hwb|color)\([^()]*\)/gi, m => _normColor(m) || m);
+}
+
 function pageHTMLFull(body, W, H) {
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${FONT_EMBED}*{margin:0;padding:0;box-sizing:border-box}body{width:${W}px;}</style></head><body>${body}</body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${FONT_EMBED}*{margin:0;padding:0;box-sizing:border-box}body{width:${W}px;color:#0f172a;background:#fff;color-scheme:only light}</style></head><body>${sanitizeColors(body)}</body></html>`;
 }
 
 // Expand the requested page objects into a flat list of physical sheets,

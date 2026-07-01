@@ -129,6 +129,13 @@
     <div class="form-wrap" id="form-inner"></div>
   </div>
   <div class="editor-body" id="json-view" style="display:none;overflow:hidden;flex:1;display:none;flex-direction:column">
+    <div class="json-scope">
+      <div class="seg seg-sm" id="json-scope-seg">
+        <button class="seg-btn active" data-scope="page" onclick="setJsonScope('page')">Trang này</button>
+        <button class="seg-btn" data-scope="all" onclick="setJsonScope('all')">Tất cả trang (mảng)</button>
+      </div>
+      <span class="json-hint" id="json-hint">Sửa 1 trang hiện tại</span>
+    </div>
     <textarea id="json-ta" spellcheck="false" aria-label="Trình soạn JSON"></textarea>
     <div class="json-err" id="json-err"></div>
   </div>
