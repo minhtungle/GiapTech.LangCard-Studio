@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LangCard Studio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
-<!-- html2canvas for PNG export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<!-- JSZip for ZIP export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<!-- jsPDF for PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="src/css/styles.css">
+<!-- Font local (Inter + Fraunces) — không cần mạng -->
+<link rel="stylesheet" href="src/fonts/fonts.css?v=5">
+<!-- html2canvas-pro (bản local): fork hỗ trợ hàm màu đời mới (oklch/oklab/color()…), global vẫn là html2canvas -->
+<script src="src/vendor/html2canvas-pro.min.js?v=5"></script>
+<!-- JSZip (local) — xuất ZIP -->
+<script src="src/vendor/jszip.min.js?v=5"></script>
+<!-- jsPDF (local) — xuất PDF -->
+<script src="src/vendor/jspdf.umd.min.js?v=5"></script>
+<link rel="stylesheet" href="src/css/styles.css?v=5">
 </head>
 <body>
 <div id="shell">
@@ -259,17 +259,17 @@
 
 </div>
 
-<!-- Scripts loaded in dependency order -->
-<script src="src/js/config.js"></script>
-<script src="src/js/samples.js"></script>
-<script src="src/js/templates.js"></script>
-<script src="src/js/forms.js"></script>
-<script src="src/js/state.js"></script>
-<script src="src/js/store.js"></script>
-<script src="src/js/projects.js"></script>
-<script src="src/js/navigation.js"></script>
-<script src="src/js/preview.js"></script>
-<script src="src/js/export.js"></script>
-<script src="src/js/main.js"></script>
+<!-- Scripts loaded in dependency order (?v= để ép trình duyệt nạp bản mới, tránh cache cũ) -->
+<script src="src/js/config.js?v=5"></script>
+<script src="src/js/samples.js?v=5"></script>
+<script src="src/js/templates.js?v=5"></script>
+<script src="src/js/forms.js?v=5"></script>
+<script src="src/js/state.js?v=5"></script>
+<script src="src/js/store.js?v=5"></script>
+<script src="src/js/projects.js?v=5"></script>
+<script src="src/js/navigation.js?v=5"></script>
+<script src="src/js/preview.js?v=5"></script>
+<script src="src/js/export.js?v=5"></script>
+<script src="src/js/main.js?v=5"></script>
 </body>
 </html>

@@ -70,11 +70,13 @@ langcard-studio/
 
 Các file JS nạp tuần tự theo thứ tự phụ thuộc qua thẻ `<script>` thường — không cần build tool.
 
-## Thư viện ngoài (CDN)
+## Thư viện & tài nguyên (đều để local — chạy offline)
 
-- [html2canvas](https://html2canvas.hertzen.com/) — render PNG
-- [jsPDF](https://github.com/parallax/jsPDF) — đóng gói PDF (tải file trực tiếp)
+Tất cả nằm trong `src/vendor/` và `src/fonts/`, không cần internet:
+
+- [html2canvas-pro](https://github.com/yorickshan/html2canvas-pro) — render PNG (fork hỗ trợ hàm màu đời mới như `oklch`)
+- [jsPDF](https://github.com/parallax/jsPDF) — đóng gói PDF
 - [JSZip](https://stuk.github.io/jszip/) — đóng gói ZIP
-- Google Fonts: Inter + Fraunces
+- Font Inter + Fraunces (`.woff2` + `src/fonts/fonts.css`)
 
-Cần internet ở lần chạy đầu để tải các thư viện này.
+> Muốn cập nhật thư viện: tải bản mới đè lên file trong `src/vendor/`. Cập nhật font: chạy lại việc tải Google Fonts CSS (giả lập User-Agent Chrome để nhận `woff2`), lưu vào `src/fonts/` rồi đổi URL về đường dẫn local.
