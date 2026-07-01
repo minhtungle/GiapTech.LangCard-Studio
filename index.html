@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LangCard Studio</title>
 <!-- Font local (Inter + Fraunces) — không cần mạng -->
-<link rel="stylesheet" href="src/fonts/fonts.css?v=5">
+<link rel="stylesheet" href="src/fonts/fonts.css?v=6">
 <!-- html2canvas-pro (bản local): fork hỗ trợ hàm màu đời mới (oklch/oklab/color()…), global vẫn là html2canvas -->
-<script src="src/vendor/html2canvas-pro.min.js?v=5"></script>
+<script src="src/vendor/html2canvas-pro.min.js?v=6"></script>
 <!-- JSZip (local) — xuất ZIP -->
-<script src="src/vendor/jszip.min.js?v=5"></script>
+<script src="src/vendor/jszip.min.js?v=6"></script>
 <!-- jsPDF (local) — xuất PDF -->
-<script src="src/vendor/jspdf.umd.min.js?v=5"></script>
-<link rel="stylesheet" href="src/css/styles.css?v=5">
+<script src="src/vendor/jspdf.umd.min.js?v=6"></script>
+<link rel="stylesheet" href="src/css/styles.css?v=6">
 </head>
 <body>
 <div id="shell">
@@ -255,21 +255,32 @@
 <input type="file" id="import-file-input" accept="application/json,.json" style="display:none" onchange="importJSONFile(event)">
 <input type="file" id="import-proj-input" accept="application/json,.json" style="display:none" onchange="importProjectFile(event)">
 
+<!-- EXPORT PROGRESS OVERLAY -->
+<div id="export-overlay" aria-hidden="true">
+  <div class="export-card" role="status" aria-live="polite">
+    <div class="export-spinner"></div>
+    <div class="export-title" id="export-title">Đang xuất…</div>
+    <div class="export-bar"><div class="export-bar-fill" id="export-bar-fill"></div></div>
+    <div class="export-sub" id="export-sub">Chuẩn bị…</div>
+    <button class="btn btn-ghost export-cancel" id="export-cancel" onclick="cancelExport()">Huỷ</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 </div>
 
 <!-- Scripts loaded in dependency order (?v= để ép trình duyệt nạp bản mới, tránh cache cũ) -->
-<script src="src/js/config.js?v=5"></script>
-<script src="src/js/samples.js?v=5"></script>
-<script src="src/js/templates.js?v=5"></script>
-<script src="src/js/forms.js?v=5"></script>
-<script src="src/js/state.js?v=5"></script>
-<script src="src/js/store.js?v=5"></script>
-<script src="src/js/projects.js?v=5"></script>
-<script src="src/js/navigation.js?v=5"></script>
-<script src="src/js/preview.js?v=5"></script>
-<script src="src/js/export.js?v=5"></script>
-<script src="src/js/main.js?v=5"></script>
+<script src="src/js/config.js?v=6"></script>
+<script src="src/js/samples.js?v=6"></script>
+<script src="src/js/templates.js?v=6"></script>
+<script src="src/js/forms.js?v=6"></script>
+<script src="src/js/state.js?v=6"></script>
+<script src="src/js/store.js?v=6"></script>
+<script src="src/js/projects.js?v=6"></script>
+<script src="src/js/navigation.js?v=6"></script>
+<script src="src/js/preview.js?v=6"></script>
+<script src="src/js/export.js?v=6"></script>
+<script src="src/js/main.js?v=6"></script>
 </body>
 </html>

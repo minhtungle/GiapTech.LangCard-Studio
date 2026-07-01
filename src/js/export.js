@@ -3,6 +3,37 @@
 // ═══════════════════════════════
 let _exportFmt = 'pdf';
 let _exporting = false;
+let _exportCancel = false;
+
+// ── overlay tiến trình xuất ──
+function showExportProgress(title){
+  _exportCancel = false;
+  const ov = document.getElementById('export-overlay');
+  if(!ov) return;
+  document.getElementById('export-title').textContent = title;
+  setExportProgress(0, 0, 'Chuẩn bị…');
+  const btn = document.getElementById('export-cancel');
+  if(btn){ btn.disabled = false; btn.textContent = 'Huỷ'; }
+  ov.classList.add('on'); ov.setAttribute('aria-hidden','false');
+}
+function setExportProgress(done, total, label){
+  const fill = document.getElementById('export-bar-fill');
+  const sub  = document.getElementById('export-sub');
+  const pct  = total>0 ? Math.round(done/total*100) : (label ? 100 : 0);
+  if(fill) fill.style.width = pct+'%';
+  if(sub)  sub.textContent = label || (total>0 ? `Trang ${done}/${total} · ${pct}%` : '');
+}
+function hideExportProgress(){
+  const ov = document.getElementById('export-overlay');
+  if(ov){ ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); }
+}
+function cancelExport(){
+  _exportCancel = true;
+  const sub = document.getElementById('export-sub');
+  if(sub) sub.textContent = 'Đang huỷ…';
+  const btn = document.getElementById('export-cancel');
+  if(btn) btn.disabled = true;
+}
 
 function segPick(btn, groupId) {
   document.querySelectorAll(`#${groupId} .seg-btn`).forEach(b=>b.classList.remove('active'));
@@ -57,21 +88,28 @@ function exportPDF(pagesArr, W, H, scale) {
   if(!JsPDF){ toast('Chưa tải được jsPDF (cần mạng)'); return; }
   _exporting = true;
   const sheets = buildExportSheets(pagesArr, W, H);
-  toast(`Đang dựng PDF (${sheets.length} trang)...`);
+  showExportProgress(`Xuất PDF · ${sheets.length} trang`);
   (async () => {
     try{
       const pdf = new JsPDF({ orientation: W>=H?'landscape':'portrait', unit:'px', format:[W,H], compress:true });
-      let first = true;
+      let first = true, i = 0;
       for(const s of sheets){
+        if(_exportCancel) break;
+        setExportProgress(i, sheets.length, `Đang dựng trang ${i+1}/${sheets.length}…`);
         const dataUrl = await renderToCanvas(pageHTMLFull(s.html, W, H), W, H, scale);
         if(!first) pdf.addPage([W,H], W>=H?'landscape':'portrait');
         pdf.addImage(dataUrl, 'PNG', 0, 0, W, H);
-        first = false;
+        first = false; i++;
+        setExportProgress(i, sheets.length, `Đã dựng ${i}/${sheets.length} trang`);
       }
-      pdf.save('langcards.pdf');
-      toast(`Đã tải PDF (${sheets.length} trang) ✓`);
+      if(_exportCancel){ toast('Đã huỷ xuất PDF'); }
+      else{
+        setExportProgress(sheets.length, sheets.length, 'Đang đóng gói & tải…');
+        pdf.save('langcards.pdf');
+        toast(`Đã tải PDF (${sheets.length} trang) ✓`);
+      }
     }catch(e){ toast('Lỗi xuất PDF: '+(e.message||e)); }
-    _exporting = false;
+    finally{ _exporting = false; hideExportProgress(); }
   })();
 }
 
@@ -79,19 +117,24 @@ async function exportPNG(pagesArr, W, H, scale) {
   if(typeof html2canvas === 'undefined'){ toast('Chưa tải được html2canvas (cần mạng)'); return; }
   _exporting = true;
   const sheets = buildExportSheets(pagesArr, W, H);
-  toast(`Đang xuất ${sheets.length} ảnh PNG...`);
+  showExportProgress(`Xuất PNG · ${sheets.length} ảnh`);
   try{
+    let i = 0;
     for(const s of sheets){
+      if(_exportCancel) break;
+      setExportProgress(i, sheets.length, `Đang dựng ảnh ${i+1}/${sheets.length}…`);
       const dataUrl = await renderToCanvas(pageHTMLFull(s.html, W, H), W, H, scale);
       const a = document.createElement('a');
       a.href = dataUrl;
       a.download = `langcard_${String(s.num).padStart(2,'0')}.png`;
       a.click();
+      i++;
+      setExportProgress(i, sheets.length, `Đã lưu ${i}/${sheets.length} ảnh`);
       await new Promise(r=>setTimeout(r,120));
     }
-    toast(`Đã xuất ${sheets.length} ảnh PNG ✓`);
+    toast(_exportCancel ? 'Đã huỷ xuất PNG' : `Đã xuất ${sheets.length} ảnh PNG ✓`);
   }catch(e){ toast('Lỗi xuất PNG: '+(e.message||e)); }
-  _exporting = false;
+  finally{ _exporting = false; hideExportProgress(); }
 }
 
 // Render an HTML string to a PNG dataURL via a hidden iframe + html2canvas.
@@ -139,20 +182,30 @@ async function exportZIP(pagesArr, W, H, scale) {
   if(typeof JSZip === 'undefined'){ toast('Chưa tải được JSZip (cần mạng)'); return; }
   _exporting = true;
   const sheets = buildExportSheets(pagesArr, W, H);
-  toast(`Đang dựng ${sheets.length} ảnh cho ZIP...`);
+  showExportProgress(`Xuất ZIP · ${sheets.length} ảnh`);
   try{
     const zip = new JSZip();
+    let i = 0;
     for(const s of sheets){
+      if(_exportCancel) break;
+      setExportProgress(i, sheets.length, `Đang dựng ảnh ${i+1}/${sheets.length}…`);
       const dataUrl = await renderToCanvas(pageHTMLFull(s.html, W, H), W, H, scale);
       zip.file(`langcard_${String(s.num).padStart(2,'0')}.png`, dataUrl.split(',')[1], {base64:true});
+      i++;
+      setExportProgress(i, sheets.length, `Đã thêm ${i}/${sheets.length} ảnh`);
     }
-    const blob = await zip.generateAsync({type:'blob'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'langcards.zip';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('Đã tải ZIP ✓');
+    if(_exportCancel){ toast('Đã huỷ xuất ZIP'); }
+    else{
+      const blob = await zip.generateAsync({type:'blob'}, meta => {
+        setExportProgress(1, 1, `Đang nén… ${Math.round(meta.percent)}%`);
+      });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'langcards.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Đã tải ZIP ✓');
+    }
   }catch(e){ toast('Lỗi xuất ZIP: '+(e.message||e)); }
-  _exporting = false;
+  finally{ _exporting = false; hideExportProgress(); }
 }
