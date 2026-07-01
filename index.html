@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LangCard Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<!-- html2canvas for PNG export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- JSZip for ZIP export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+<div id="shell">
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">Lang<em>Card</em> Studio</div>
+
+  <!-- PROJECT DROPDOWN -->
+  <div class="tb-group proj-group">
+    <div class="proj-dd">
+      <button class="proj-trigger" onclick="toggleProjMenu()" title="Dự án">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5a1 1 0 011-1h3l1.5 1.5H13a1 1 0 011 1V12a1 1 0 01-1 1H3a1 1 0 01-1-1V5z"/></svg>
+        <span class="proj-name" id="proj-name">Dự án</span>
+        <svg class="proj-caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="proj-menu" id="proj-menu">
+        <div class="proj-menu-list" id="proj-menu-list"></div>
+        <div class="proj-menu-foot">
+          <button class="proj-menu-act" onclick="newProject()">+ Tạo dự án mới</button>
+          <button class="proj-menu-act" onclick="triggerImportProject()">⤒ Nhập dự án (JSON)</button>
+          <button class="proj-menu-act" onclick="openProjModal()">⊞ Quản lý dự án</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tb-group">
+    <span class="tb-label">Khổ</span>
+    <select class="size-select" id="doc-size" onchange="updateDocSize(this.value)" aria-label="Khổ tài liệu">
+      <option value="a4">A4 (595×842)</option>
+      <option value="a5">A5 (420×595)</option>
+      <option value="letter">Letter (612×792)</option>
+      <option value="post">Bài đăng 1:1 (800×800)</option>
+      <option value="story">Story 9:16 (480×852)</option>
+    </select>
+  </div>
+
+  <div class="tb-group">
+    <button class="btn btn-icon" id="btn-undo" onclick="undo()" title="Hoàn tác (Ctrl+Z)" aria-label="Hoàn tác">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h6a3 3 0 110 6H7"/><path d="M4 7l3-3M4 7l3 3"/></svg>
+    </button>
+    <button class="btn btn-icon" id="btn-redo" onclick="redo()" title="Làm lại (Ctrl+Y)" aria-label="Làm lại">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 7H6a3 3 0 100 6h3"/><path d="M12 7l-3-3M12 7l-3 3"/></svg>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <div class="tb-group">
+    <button class="btn btn-ghost" onclick="addPage()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>
+      Trang mới
+    </button>
+  </div>
+
+  <div class="tb-group">
+    <span class="tb-label">JSON</span>
+    <button class="btn btn-ghost" onclick="triggerImport()" title="Mở JSON">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 10V2M8 2L5 5M8 2l3 3"/><path d="M3 11v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+      Mở
+    </button>
+    <button class="btn btn-ghost" onclick="exportJSONFile()" title="Lưu JSON (Ctrl+S)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v8M8 10L5 7M8 10l3-3"/><path d="M3 11v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+      Lưu
+    </button>
+  </div>
+
+  <div class="tb-group">
+    <span class="tb-label">Xuất</span>
+    <button class="btn btn-ghost" onclick="openExport('pdf')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M5 6h6M5 9h4"/></svg>
+      PDF
+    </button>
+    <button class="btn btn-ghost" onclick="openExport('png')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="12" height="10" rx="1.5"/><circle cx="5.5" cy="6.5" r="1.2"/><path d="M2 11l4-4 3 3 2-2 3 3"/></svg>
+      PNG
+    </button>
+    <button class="btn btn-ghost" onclick="openExport('zip')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2H5a1 1 0 00-1 1v10a1 1 0 001 1h6a1 1 0 001-1V6L9 2z"/><path d="M9 2v4h4"/><path d="M7 9v4M7 9l-1.5-2M7 9l1.5-2"/></svg>
+      ZIP
+    </button>
+  </div>
+
+  <div class="tb-group">
+    <button class="btn btn-icon" id="btn-theme" onclick="toggleTheme()" title="Đổi giao diện sáng/tối" aria-label="Đổi giao diện">☀️</button>
+    <button class="btn btn-icon" onclick="toggleShortcuts()" title="Phím tắt (?)" aria-label="Phím tắt">?</button>
+  </div>
+</div>
+
+<!-- LEFT COL -->
+<div id="left-col">
+  <div class="col-section">Template</div>
+  <div id="tpl-list"></div>
+  <div class="divider"></div>
+  <div class="col-section">Trang trong tài liệu</div>
+  <div id="page-list"></div>
+  <div class="left-footer">
+    <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="addPage()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px"><path d="M8 3v10M3 8h10"/></svg>
+      Thêm trang mới
+    </button>
+  </div>
+</div>
+
+<!-- MID COL: EDITOR -->
+<div id="mid-col">
+  <div class="editor-head">
+    <button class="tab-pill active" id="tab-form" onclick="switchTab('form')">Chỉnh sửa</button>
+    <button class="tab-pill" id="tab-json" onclick="switchTab('json')">JSON</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-accent" id="apply-btn" onclick="applyJSON()" style="display:none;font-size:11px">Áp dụng JSON</button>
+  </div>
+  <div class="editor-body" id="form-view">
+    <div class="form-wrap" id="form-inner"></div>
+  </div>
+  <div class="editor-body" id="json-view" style="display:none;overflow:hidden;flex:1;display:none;flex-direction:column">
+    <textarea id="json-ta" spellcheck="false" aria-label="Trình soạn JSON"></textarea>
+    <div class="json-err" id="json-err"></div>
+  </div>
+</div>
+
+<!-- RIGHT COL: PREVIEW -->
+<div id="right-col">
+  <div class="preview-head">
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-view-single" onclick="setView('single')" title="Xem từng trang" aria-label="Xem từng trang">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="2.5" width="8" height="11" rx="1"/></svg>
+      </button>
+      <button class="view-btn" id="btn-view-grid" onclick="setView('grid')" title="Xem dạng lưới" aria-label="Xem dạng lưới">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+      </button>
+    </div>
+    <span class="ph-title" id="ph-title">Preview</span>
+    <div class="pv-tools">
+      <button class="pv-tool on" id="btn-pgnum" onclick="togglePgNum()" title="Số trang" aria-label="Số trang">#</button>
+    </div>
+    <div class="zoom-ctrl">
+      <button class="zoom-btn" onclick="adjZoom(-0.1)" aria-label="Thu nhỏ">−</button>
+      <span class="zoom-val" id="zoom-val" onclick="zoom100()" title="Đặt lại 100%">70%</span>
+      <button class="zoom-btn" onclick="adjZoom(0.1)" aria-label="Phóng to">+</button>
+    </div>
+  </div>
+  <div class="preview-subbar">
+    <div class="seg seg-sm">
+      <button class="seg-btn active" onclick="zoomFit()" title="Vừa khung (Ctrl+0)">Vừa khung</button>
+      <button class="seg-btn" onclick="zoom100()" title="100% (Ctrl+1)">100%</button>
+      <button class="seg-btn" onclick="zoomFill()" title="Lấp đầy ngang">Lấp đầy</button>
+    </div>
+    <div style="flex:1"></div>
+    <span class="sub-label">Nền</span>
+    <div class="seg seg-sm" id="bg-seg">
+      <button class="seg-btn active" data-bg="grid" onclick="setBg('grid')">Lưới</button>
+      <button class="seg-btn" data-bg="dark" onclick="setBg('dark')">Tối</button>
+      <button class="seg-btn" data-bg="light" onclick="setBg('light')">Sáng</button>
+      <button class="seg-btn" data-bg="checker" onclick="setBg('checker')">Caro</button>
+    </div>
+  </div>
+  <div id="preview-wrap" class="bg-grid">
+    <div id="a4-outer"><div id="a4-frame"></div></div>
+  </div>
+  <div id="thumb-strip"></div>
+  <div class="preview-foot">
+    <button class="nav-btn" id="nav-prev" onclick="navPage(-1)">← Trước</button>
+    <span class="nav-ct" id="nav-ct">1 / 1</span>
+    <button class="nav-btn" id="nav-next" onclick="navPage(1)">Tiếp →</button>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-title" id="modal-title">Xuất PDF</div>
+    <div class="modal-row">
+      <div class="modal-label">Trang</div>
+      <div class="seg" id="modal-pages-seg">
+        <button class="seg-btn active" data-v="current" onclick="segPick(this,'modal-pages-seg')">Trang hiện tại</button>
+        <button class="seg-btn" data-v="all" onclick="segPick(this,'modal-pages-seg')">Tất cả trang</button>
+      </div>
+    </div>
+    <div class="modal-row" id="modal-dpi-row">
+      <div class="modal-label">Chất lượng</div>
+      <div class="seg" id="modal-dpi-seg">
+        <button class="seg-btn" data-v="1" onclick="segPick(this,'modal-dpi-seg')">72dpi (web)</button>
+        <button class="seg-btn active" data-v="2" onclick="segPick(this,'modal-dpi-seg')">150dpi</button>
+        <button class="seg-btn" data-v="3" onclick="segPick(this,'modal-dpi-seg')">300dpi (in)</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">Huỷ</button>
+      <button class="btn btn-accent" id="modal-do-btn" onclick="doExport()">Tải xuống</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MANAGER MODAL (grid) -->
+<div id="proj-modal-overlay" onclick="if(event.target===this)closeProjModal()">
+  <div class="proj-modal" role="dialog" aria-modal="true">
+    <div class="proj-modal-head">
+      <div class="modal-title">Quản lý dự án</div>
+      <div class="proj-modal-tools">
+        <button class="btn btn-ghost" onclick="newProject();renderProjModal()">+ Dự án mới</button>
+        <button class="btn btn-ghost" onclick="triggerImportProject()">⤒ Nhập</button>
+        <button class="btn btn-icon" onclick="closeProjModal()" title="Đóng" aria-label="Đóng">×</button>
+      </div>
+    </div>
+    <div class="proj-grid" id="proj-grid"></div>
+  </div>
+</div>
+
+<!-- SHORTCUTS PANEL -->
+<div id="sc-overlay" onclick="if(event.target===this)toggleShortcuts(false)">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-title">Phím tắt</div>
+    <div class="sc-list">
+      <div class="sc-row"><span>Hoàn tác</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd></span></div>
+      <div class="sc-row"><span>Làm lại</span><span><kbd>Ctrl</kbd>+<kbd>Y</kbd></span></div>
+      <div class="sc-row"><span>Trang trước</span><kbd>←</kbd></div>
+      <div class="sc-row"><span>Trang sau</span><kbd>→</kbd></div>
+      <div class="sc-row"><span>Nhân bản trang</span><span><kbd>Ctrl</kbd>+<kbd>D</kbd></span></div>
+      <div class="sc-row"><span>Lưu JSON</span><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span></div>
+      <div class="sc-row"><span>Vừa khung / 100%</span><span><kbd>Ctrl</kbd>+<kbd>0</kbd> / <kbd>Ctrl</kbd>+<kbd>1</kbd></span></div>
+      <div class="sc-row"><span>Phóng to tại con trỏ</span><span><kbd>Ctrl</kbd>+<kbd>cuộn</kbd></span></div>
+      <div class="sc-row"><span>Kéo xem (pan)</span><span><kbd>Space</kbd>+<kbd>kéo</kbd></span></div>
+      <div class="sc-row"><span>Xem dạng lưới</span><kbd>G</kbd></div>
+      <div class="sc-row"><span>Bảng phím tắt</span><kbd>?</kbd></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="toggleShortcuts(false)">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file-input" accept="application/json,.json" style="display:none" onchange="importJSONFile(event)">
+<input type="file" id="import-proj-input" accept="application/json,.json" style="display:none" onchange="importProjectFile(event)">
+
+<div id="toast"></div>
+
+</div>
+
+<!-- Scripts loaded in dependency order -->
+<script src="src/js/config.js"></script>
+<script src="src/js/samples.js"></script>
+<script src="src/js/templates.js"></script>
+<script src="src/js/forms.js"></script>
+<script src="src/js/state.js"></script>
+<script src="src/js/store.js"></script>
+<script src="src/js/projects.js"></script>
+<script src="src/js/navigation.js"></script>
+<script src="src/js/preview.js"></script>
+<script src="src/js/export.js"></script>
+<script src="src/js/main.js"></script>
+</body>
+</html>

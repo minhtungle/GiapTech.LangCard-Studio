@@ -1,0 +1,9 @@
+{
+  "name": "langcard-studio",
+  "version": "1.0.0",
+  "description": "Công cụ tạo thẻ học ngoại ngữ chạy trên trình duyệt (PDF/PNG/ZIP export)",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "license": "MIT"
+}
