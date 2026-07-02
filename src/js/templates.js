@@ -69,6 +69,69 @@ function chunkList(arr, first, rest) {
   return out;
 }
 
+// ── MEASURED PAGINATION ────────────────────────
+// Đo chiều cao render thật rồi nhồi item cho đầy từng tờ, chỉ ngắt khi tràn.
+// Dùng chung một khung đo ẩn (offscreen). Kết quả (số item mỗi tờ) được cache
+// theo (khoá layout + nội dung) để không đo lại mỗi lần gõ phím.
+let _measurer = null;
+function _getMeasurer(){
+  if(_measurer && _measurer.isConnected) return _measurer;
+  const d = document.createElement('div');
+  d.setAttribute('aria-hidden','true');
+  d.style.cssText = 'position:fixed;left:-99999px;top:0;visibility:hidden;pointer-events:none';
+  (document.body || document.documentElement).appendChild(d);
+  _measurer = d;
+  return d;
+}
+const _packCache = new Map();
+function _sliceByLengths(list, lengths){
+  const out=[]; let i=0;
+  for(const n of lengths){ out.push(list.slice(i, i+n)); i += n; }
+  return out;
+}
+// spec: { key, W, H, wrapPad, header, container, item, footer }
+//  wrapPad   = chuỗi style padding của khối nội dung
+//  header    = HTML tiêu đề (chỉ tờ đầu)
+//  container = style của khung chứa item (grid/flex + gap)
+//  item(it,i)= HTML một item
+//  footer    = px chừa cho số trang (mặc định 34)
+function packChunks(items, spec){
+  const list = items || [];
+  if(!list.length) return [[]];
+  // không đo được (chưa có DOM) → fallback: 1 tờ
+  if(typeof document === 'undefined' || !document.body) return [list];
+
+  const sig = `${spec.key}|${spec.W}x${spec.H}|${JSON.stringify(list)}`;
+  const cached = _packCache.get(sig);
+  if(cached) return _sliceByLengths(list, cached);
+
+  const footer = spec.footer == null ? 34 : spec.footer;
+  const avail = spec.H - footer;
+  const m = _getMeasurer();
+  const lengths = [];
+  let i = 0;
+  while(i < list.length){
+    const isFirst = lengths.length === 0;
+    m.innerHTML = `<div style="width:${spec.W}px;box-sizing:border-box;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;line-height:normal;${spec.wrapPad}">${isFirst ? spec.header : ''}<div data-mc style="${spec.container}"></div></div>`;
+    const wrap = m.firstElementChild;
+    const cont = wrap.querySelector('[data-mc]');
+    let placed = 0;
+    while(i < list.length){
+      cont.insertAdjacentHTML('beforeend', spec.item(list[i], i));
+      if(placed > 0 && wrap.offsetHeight > avail){
+        cont.lastElementChild.remove();   // item vừa thêm bị tràn → trả lại tờ sau
+        break;
+      }
+      placed++; i++;                        // luôn giữ tối thiểu 1 item/tờ
+    }
+    lengths.push(placed);
+  }
+  m.innerHTML = '';
+  if(_packCache.size > 300){ _packCache.delete(_packCache.keys().next().value); }
+  _packCache.set(sig, lengths);
+  return _sliceByLengths(list, lengths);
+}
+
 // wrap one part with its page-number footer + page background
 function wrapPart(part, pn, W, H) {
   const col = part.dark ? 'rgba(255,255,255,.15)' : '#cbd5e1';
@@ -90,13 +153,14 @@ function renderVocabGridParts(d, W, H, dark=true) {
         <span style="font-size:10px;color:${t.fg3};background:${t.chipBg};padding:3px 10px;border-radius:20px;border:1px solid ${t.chipBd}">${esc(d.level||'')}</span>
       </div>`;
 
-  return chunkList(d.items, 6, 9).map((items, ci) => {
-    const cols = items.length<=2?2:items.length<=4?2:3;
-    const cards = items.map(it => {
-      const tc = TYPE_COLOR[it.type]||'#94a3b8';
-      const tbg = TYPE_BG[it.type]||'rgba(148,163,184,.12)';
-      const imgTag = it.image ? `<img src="${esc(it.image)}" style="width:100%;height:${Math.round(H*0.09)}px;object-fit:cover;border-radius:6px;margin-bottom:6px">` : '';
-      return `<div style="background:${t.card};border:1px solid ${t.cardBd};border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;backdrop-filter:blur(4px)">
+  const cols = W>=560 ? 3 : 2;
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:${Math.round(W*0.02)}px`;
+  const item = it => {
+    const tc = TYPE_COLOR[it.type]||'#94a3b8';
+    const tbg = TYPE_BG[it.type]||'rgba(148,163,184,.12)';
+    const imgTag = it.image ? `<img src="${esc(it.image)}" style="width:100%;height:${Math.round(H*0.09)}px;object-fit:cover;border-radius:6px;margin-bottom:6px">` : '';
+    return `<div style="background:${t.card};border:1px solid ${t.cardBd};border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;backdrop-filter:blur(4px)">
         ${imgTag}
         <div style="display:inline-flex;align-items:center;gap:4px">
           <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:${tc};background:${tbg};padding:2px 7px;border-radius:20px">${esc(it.type||'')}</span>
@@ -105,12 +169,12 @@ function renderVocabGridParts(d, W, H, dark=true) {
         <div style="font-size:${Math.round(W*0.023)}px;color:${t.fg2};line-height:1.4">${esc(it.meaning||'')}</div>
         ${it.note?`<div style="font-size:${Math.round(W*0.018)}px;color:${t.fg4};margin-top:auto;font-style:italic">${esc(it.note)}</div>`:''}
       </div>`;
-    }).join('');
-
+  };
+  return packChunks(d.items, {key:'vocab', W, H, wrapPad, header, container, item}).map((items, ci) => {
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:${Math.round(W*0.02)}px">${cards}</div>
+        <div style="${container}">${items.map(item).join('')}</div>
       </div>`;
     return { content, bg, dark };
   });
@@ -130,20 +194,23 @@ function renderSentencePairsParts(d, W, H, dark=false) {
       </div>
       <div style="width:${Math.round(W*0.12)}px;height:3px;background:#f59e0b;border-radius:2px;margin-bottom:${Math.round(H*0.03)}px"></div>`;
 
-  return chunkList(d.items, 6, 9).map((items, ci) => {
-    const rows = items.map((it,i) => {
-      const active = ci===0 && i===0;
-      const lineHtml = highlight(it.sentence||'', it.highlight||[]);
-      return `<div style="border-left:3px solid ${active?'#f59e0b':t.rule};padding-left:${Math.round(W*0.03)}px;padding-top:3px;padding-bottom:3px">
+  const wrapPad = `padding:${Math.round(H*0.045)}px ${Math.round(W*0.065)}px`;
+  const container = `display:flex;flex-direction:column;gap:${Math.round(H*0.022)}px`;
+  const item = (it, gi) => {
+    const active = gi===0;
+    const lineHtml = highlight(it.sentence||'', it.highlight||[]);
+    return `<div style="border-left:3px solid ${active?'#f59e0b':t.rule};padding-left:${Math.round(W*0.03)}px;padding-top:3px;padding-bottom:3px">
         <div style="font-size:${Math.round(W*0.028)}px;color:${t.fg};font-weight:600;line-height:1.45;margin-bottom:4px">${lineHtml}</div>
         <div style="font-size:${Math.round(W*0.02)}px;color:${t.fg3};line-height:1.5;font-style:italic">${esc(it.translation||'')}</div>
       </div>`;
-    }).join('');
-
+  };
+  let gi = 0;
+  return packChunks(d.items, {key:'sentence', W, H, wrapPad, header, container, item}).map((items, ci) => {
+    const rows = items.map(it => item(it, gi++)).join('');
     const content = `
-      <div style="padding:${Math.round(H*0.045)}px ${Math.round(W*0.065)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:flex;flex-direction:column;gap:${Math.round(H*0.022)}px">${rows}</div>
+        <div style="${container}">${rows}</div>
       </div>`;
     return { content, bg, dark };
   });
@@ -160,28 +227,29 @@ function renderConjugationParts(d, W, H, dark=false) {
       </div>`;
   const noteHtml = d.note?`<div style="margin-top:${Math.round(H*0.015)}px;background:#fef3c7;border-left:3px solid #f59e0b;padding:${Math.round(H*0.012)}px ${Math.round(W*0.025)}px;border-radius:0 6px 6px 0;font-size:${Math.round(W*0.019)}px;color:#92400e"><strong>Lưu ý:</strong> ${esc(d.note)}</div>`:'';
 
-  const chunks = chunkList(d.verbs, 2, 2);
-  return chunks.map((verbs, ci) => {
-    const tables = verbs.map(v => {
-      const rows = (v.rows||[]).map((r,i)=>`<tr style="background:${i%2===0?v.bgLight||'rgba(79,70,229,.05)':t.card}">
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:grid;grid-template-columns:1fr 1fr;gap:${Math.round(W*0.025)}px`;
+  const item = v => {
+    const rows = (v.rows||[]).map((r,i)=>`<tr style="background:${i%2===0?v.bgLight||'rgba(79,70,229,.05)':t.card}">
         <td style="padding:${Math.round(H*0.009)}px ${Math.round(W*0.02)}px;color:${t.fg3};font-weight:600;font-size:${Math.round(W*0.019)}px;${i?'border-top:1px solid '+t.rule:''}">${esc(r.pronoun)}</td>
         <td style="padding:${Math.round(H*0.009)}px ${Math.round(W*0.02)}px;color:${t.fg};font-weight:800;font-size:${Math.round(W*0.023)}px;letter-spacing:-.2px;${i?'border-top:1px solid '+t.rule:''}">${esc(r.form)}</td>
         <td style="padding:${Math.round(H*0.009)}px ${Math.round(W*0.02)}px;color:${t.fg2};font-size:${Math.round(W*0.017)}px;${i?'border-top:1px solid '+t.rule:''}">${esc(r.meaning||'')}</td>
       </tr>`).join('');
-      return `<div style="border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+    return `<div style="border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
         <div style="background:${v.color||'#4f46e5'};color:#fff;padding:${Math.round(H*0.012)}px ${Math.round(W*0.025)}px;display:flex;align-items:baseline;gap:8px">
           <span style="font-size:${Math.round(W*0.028)}px;font-weight:800;letter-spacing:-.2px">${esc(v.verb)}</span>
           <span style="font-size:${Math.round(W*0.019)}px;opacity:.75">— ${esc(v.meaning)}</span>
         </div>
         <table style="width:100%;border-collapse:collapse;background:${t.card}">${rows}</table>
       </div>`;
-    }).join('');
-
+  };
+  const chunks = packChunks(d.verbs, {key:'conj', W, H, wrapPad, header, container, item});
+  return chunks.map((verbs, ci) => {
     const isLast = ci === chunks.length-1;
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:${Math.round(W*0.025)}px">${tables}</div>
+        <div style="${container}">${verbs.map(item).join('')}</div>
         ${isLast ? noteHtml : ''}
       </div>`;
     return { content, bg, dark };
@@ -198,8 +266,9 @@ function renderIdiomSpotlightParts(d, W, H, dark=true) {
         <div style="font-size:${Math.round(W*0.05)}px;color:${t.fg};font-weight:700;font-family:'Fraunces',Georgia,serif;letter-spacing:-.4px">${esc(d.topic||'Idioms')}</div>
       </div>`;
 
-  return chunkList(d.items, 5, 7).map((items, ci) => {
-    const cards = items.map(it => `
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:flex;flex-direction:column;gap:${Math.round(H*0.014)}px`;
+  const item = it => `
       <div style="background:${t.card};border:1px solid ${t.cardBd};border-left:3px solid ${it.color||'#6366f1'};border-radius:0 8px 8px 0;padding:${Math.round(H*0.014)}px ${Math.round(W*0.035)}px">
         <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:${Math.round(H*0.007)}px">
           <span style="font-size:${Math.round(W*0.032)}px;color:${t.fg};font-weight:700;letter-spacing:-.2px">${esc(it.idiom||'')}</span>
@@ -207,12 +276,12 @@ function renderIdiomSpotlightParts(d, W, H, dark=true) {
         </div>
         <div style="font-size:${Math.round(W*0.02)}px;color:${t.fg2};line-height:1.5;margin-bottom:${Math.round(H*0.006)}px">${esc(it.explanation||'')}</div>
         <div style="font-size:${Math.round(W*0.018)}px;color:${t.fg4};font-style:italic">"${esc(it.example||'')}"</div>
-      </div>`).join('');
-
+      </div>`;
+  return packChunks(d.items, {key:'idiom', W, H, wrapPad, header, container, item}).map((items, ci) => {
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:flex;flex-direction:column;gap:${Math.round(H*0.014)}px">${cards}</div>
+        <div style="${container}">${items.map(item).join('')}</div>
       </div>`;
     return { content, bg, dark };
   });
@@ -231,31 +300,32 @@ function renderDialogueParts(d, W, H, dark=false) {
       </div>`;
   const kw = (d.keywords||[]).length ? `<div style="margin-top:${Math.round(H*0.015)}px;background:#e0f2fe;border-radius:6px;padding:${Math.round(H*0.01)}px ${Math.round(W*0.025)}px;font-size:${Math.round(W*0.019)}px;color:#0369a1"><strong>Cụm từ khoá:</strong> ${(d.keywords||[]).map(k=>esc(k)).join(' · ')}</div>` : '';
 
-  const chunks = chunkList(d.lines, 5, 8);
-  return chunks.map((lns, ci) => {
-    const lines = lns.map(ln => {
-      const sp = ln.speaker==='B' ? spB : spA;
-      const isB = ln.speaker==='B';
-      const txt = highlight(ln.text||'', ln.highlight||[]);
-      // A = neutral bubble (adapts to mode); B = fixed green accent bubble (dark text)
-      const bBg  = isB ? '#dcfce7' : t.card;
-      const bFg  = isB ? '#14532d' : t.fg;
-      const bFg2 = isB ? '#3f6212' : t.fg3;
-      const bubble = `<div style="background:${bBg};border-radius:${isB?'10px 2px 10px 10px':'2px 10px 10px 10px'};padding:${Math.round(H*0.012)}px ${Math.round(W*0.03)}px;max-width:76%;box-shadow:0 1px 4px rgba(0,0,0,.08)">
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:flex;flex-direction:column;gap:${Math.round(H*0.016)}px`;
+  const item = ln => {
+    const sp = ln.speaker==='B' ? spB : spA;
+    const isB = ln.speaker==='B';
+    const txt = highlight(ln.text||'', ln.highlight||[]);
+    // A = neutral bubble (adapts to mode); B = fixed green accent bubble (dark text)
+    const bBg  = isB ? '#dcfce7' : t.card;
+    const bFg  = isB ? '#14532d' : t.fg;
+    const bFg2 = isB ? '#3f6212' : t.fg3;
+    const bubble = `<div style="background:${bBg};border-radius:${isB?'10px 2px 10px 10px':'2px 10px 10px 10px'};padding:${Math.round(H*0.012)}px ${Math.round(W*0.03)}px;max-width:76%;box-shadow:0 1px 4px rgba(0,0,0,.08)">
         <div style="font-size:${Math.round(W*0.024)}px;color:${bFg};font-weight:600;line-height:1.45;margin-bottom:4px">${txt}</div>
         <div style="font-size:${Math.round(W*0.018)}px;color:${bFg2};font-style:italic;line-height:1.4">${esc(ln.translation||'')}</div>
       </div>`;
-      const av = `<div style="width:${Math.round(W*0.052)}px;height:${Math.round(W*0.052)}px;border-radius:50%;background:${sp.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:700;font-size:${Math.round(W*0.022)}px">${esc(sp.name.charAt(0))}</div>`;
-      return isB
-        ? `<div style="display:flex;gap:${Math.round(W*0.015)}px;flex-direction:row-reverse;align-items:flex-start">${av}${bubble}</div>`
-        : `<div style="display:flex;gap:${Math.round(W*0.015)}px;align-items:flex-start">${av}${bubble}</div>`;
-    }).join('');
-
+    const av = `<div style="width:${Math.round(W*0.052)}px;height:${Math.round(W*0.052)}px;border-radius:50%;background:${sp.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:700;font-size:${Math.round(W*0.022)}px">${esc(sp.name.charAt(0))}</div>`;
+    return isB
+      ? `<div style="display:flex;gap:${Math.round(W*0.015)}px;flex-direction:row-reverse;align-items:flex-start">${av}${bubble}</div>`
+      : `<div style="display:flex;gap:${Math.round(W*0.015)}px;align-items:flex-start">${av}${bubble}</div>`;
+  };
+  const chunks = packChunks(d.lines, {key:'dialogue', W, H, wrapPad, header, container, item});
+  return chunks.map((lns, ci) => {
     const isLast = ci === chunks.length-1;
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:flex;flex-direction:column;gap:${Math.round(H*0.016)}px">${lines}</div>
+        <div style="${container}">${lns.map(item).join('')}</div>
         ${isLast ? kw : ''}
       </div>`;
     return { content, bg, dark };
@@ -273,22 +343,23 @@ function renderWordMapParts(d, W, H, dark=false) {
         ${d.topicMeaning?`<div style="font-size:${Math.round(W*0.022)}px;color:${t.fg2};margin-top:4px">${esc(d.topicMeaning)}</div>`:''}
       </div>`;
 
-  return chunkList(d.groups, 4, 6).map((grps, ci) => {
-    const groups = grps.map(g => {
-      const wordRows = (g.items||[]).map(it=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:${Math.round(H*0.006)}px 0;border-bottom:1px solid rgba(0,0,0,.05)">
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:grid;grid-template-columns:1fr 1fr;gap:${Math.round(W*0.022)}px`;
+  const item = g => {
+    const wordRows = (g.items||[]).map(it=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:${Math.round(H*0.006)}px 0;border-bottom:1px solid rgba(0,0,0,.05)">
         <span style="color:#1c1917;font-weight:600;font-size:${Math.round(W*0.021)}px">${esc(it.word||'')}</span>
         <span style="color:#78716c;font-size:${Math.round(W*0.019)}px;text-align:right">${esc(it.meaning||'')}</span>
       </div>`).join('');
-      return `<div style="background:${g.color||'#fef3c7'};border-radius:10px;padding:${Math.round(H*0.018)}px ${Math.round(W*0.028)}px">
+    return `<div style="background:${g.color||'#fef3c7'};border-radius:10px;padding:${Math.round(H*0.018)}px ${Math.round(W*0.028)}px">
         <div style="font-size:9px;color:${g.titleColor||'#92400e'};font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:${Math.round(H*0.01)}px">${esc(g.title||'')} <span style="font-weight:400;opacity:.7">· ${esc(g.subtitle||'')}</span></div>
         ${wordRows}
       </div>`;
-    }).join('');
-
+  };
+  return packChunks(d.groups, {key:'wordmap', W, H, wrapPad, header, container, item}).map((grps, ci) => {
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:${Math.round(W*0.022)}px">${groups}</div>
+        <div style="${container}">${grps.map(item).join('')}</div>
       </div>`;
     return { content, bg, dark };
   });
@@ -316,10 +387,11 @@ function renderWordFamilyParts(d, W, H, dark=true) {
       </div>
       <div style="width:${Math.round(W*0.12)}px;height:3px;background:linear-gradient(90deg,#60a5fa,#a855f7);border-radius:2px;margin-bottom:${Math.round(H*0.025)}px"></div>`;
 
-  return chunkList(d.combinations, 5, 7).map((combos, ci) => {
-    const cards = combos.map(c => {
-      const lvc = LV[(c.level||'').toUpperCase()] || '#64748b';
-      return `<div style="background:${t.card};border:1px solid ${t.cardBd};border-radius:10px;padding:${Math.round(H*0.014)}px ${Math.round(W*0.032)}px">
+  const wrapPad = `padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px`;
+  const container = `display:flex;flex-direction:column;gap:${Math.round(H*0.014)}px`;
+  const item = c => {
+    const lvc = LV[(c.level||'').toUpperCase()] || '#64748b';
+    return `<div style="background:${t.card};border:1px solid ${t.cardBd};border-radius:10px;padding:${Math.round(H*0.014)}px ${Math.round(W*0.032)}px">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:${Math.round(H*0.006)}px">
           <div style="display:flex;align-items:baseline;gap:${Math.round(W*0.02)}px;flex-wrap:wrap">
             <span style="font-size:${Math.round(W*0.032)}px;color:${t.fg};font-weight:700;letter-spacing:-.2px">${esc(c.german||'')}</span>
@@ -330,12 +402,12 @@ function renderWordFamilyParts(d, W, H, dark=true) {
         ${c.example_de?`<div style="font-size:${Math.round(W*0.019)}px;color:${t.fg2};line-height:1.45;font-style:italic">${esc(c.example_de)}</div>`:''}
         ${c.example_vi?`<div style="font-size:${Math.round(W*0.018)}px;color:${t.fg3};line-height:1.45">${esc(c.example_vi)}</div>`:''}
       </div>`;
-    }).join('');
-
+  };
+  return packChunks(d.combinations, {key:'wordfamily', W, H, wrapPad, header, container, item}).map((combos, ci) => {
     const content = `
-      <div style="padding:${Math.round(H*0.04)}px ${Math.round(W*0.055)}px">
+      <div style="${wrapPad}">
         ${ci===0 ? header : ''}
-        <div style="display:flex;flex-direction:column;gap:${Math.round(H*0.014)}px">${cards}</div>
+        <div style="${container}">${combos.map(item).join('')}</div>
       </div>`;
     return { content, bg, dark };
   });

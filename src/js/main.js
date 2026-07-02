@@ -25,6 +25,13 @@ requestAnimationFrame(()=>{ zoomFit(); });
 initHistory();
 refreshUndoButtons();
 
+// 5. font tải xong → đo lại phân trang cho chính xác (đo lúc chưa có font sẽ lệch)
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>{
+    try{ if(typeof _packCache!=='undefined') _packCache.clear(); rAll(); if(fitMode==='fit') zoomFit(); }catch(e){}
+  });
+}
+
 // ═══════════════════════════════
 // KEYBOARD SHORTCUTS
 // ═══════════════════════════════
